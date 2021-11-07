@@ -2,6 +2,7 @@
 
 
 from liveAnalysis import *
+from algorithm import *
 import matplotlib.pyplot as plt
 
 
@@ -51,6 +52,12 @@ MA99Dif = []
 
 fig1 = plt.subplot(1, 1, 1)
 #fig2 = plt.subplot(2, 1, 2)
+
+
+#used for calculating rough profits
+midTrade = False
+buyPrice = 0
+trades = []
 
 
 #a for loop is used to simulate real time trading values coming in
@@ -122,33 +129,35 @@ for n in range(0, len(data)):
         MA250D.append(None)
 
 
-
-    if(curPos > 105):
+    if(curPos > 205):
         
         #when there is a trough in MA25 and the difference between MA99 and MA25 is large then stock is potentially bought
-        if(isTrough(MA25D, 1) and ((MA99[curPos] - MA25[curPos]) > buyMAThreshold)):
+        if(shouldBuy(dataBuf, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
 
             print("Buy at {:.4f}".format(dataBuf[curPos]))
             fig1.annotate('B', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
+            if(not midTrade):
+
+                midTrade = True
+                buyPrice = dataBuf[curPos]
+
+
+
         #"..."
-        if(isPeak(MA25D, 1) and ((MA25[curPos] - MA99[curPos]) > sellMAThreshold)):
+        if(shouldSell(dataBuf, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
             print("Sell at {:.4f}".format(dataBuf[curPos]))
 
             fig1.annotate('S', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
-        #the following is a more agressive way of buying/selling but the threshold should be high
-        #when there is a peak in MA7 and the difference between MA99 and the trading price is large then stock is potentially bought
-        if(isTrough(MA7D, 1) and (MA99Dif[curPos] < buyMA99DifThreshold)):
-            print("Big Dif Buy at {:.4f}".format(dataBuf[curPos]))
+            if(midTrade):
 
-            fig1.annotate('B', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+                percReturn = ((dataBuf[curPos] - buyPrice) / buyPrice) * 100
 
-        #"..."
-        if(isPeak(MA7D, 1) and (MA99Dif[curPos] > sellMA99DifThreshold)):
-            print("Big Dif Sell at {:.4f}".format(dataBuf[curPos]))
+                if(percReturn > 0.5):
 
-            fig1.annotate('S', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+                    midTrade = False
+                    trades.append([buyPrice, dataBuf[curPos], percReturn])
 
     #plt.pause(0.01)
 
@@ -162,6 +171,13 @@ fig1.plot(range(0, len(MA250)), MA250, label='MA250')
 plt.legend()
 
 #fig2.plot(range(0, len(MA99Dif)), MA99Dif)
+
+
+for t in trades:
+    print("Buy: {:.4f}\tSell: {:.4f}\tReturn: {:.2f}".format(float(t[0]), float(t[1]), float(t[2])))
+
+if midTrade:
+    print("Mid-Trade Buy: {:.4f}".format(buyPrice))
 
 
 plt.show()
