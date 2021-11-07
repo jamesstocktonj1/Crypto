@@ -154,10 +154,12 @@ for n in range(0, len(data)):
 
 
 
-fig1.plot(range(0, len(dataBuf)), dataBuf)
-fig1.plot(range(0, len(MA25)), MA25)
-fig1.plot(range(0, len(MA99)), MA99)
-fig1.plot(range(0, len(MA250)), MA250)
+fig1.plot(range(0, len(dataBuf)), dataBuf, label='ETH')
+fig1.plot(range(0, len(MA25)), MA25, label='MA25')
+fig1.plot(range(0, len(MA99)), MA99, label='MA99')
+fig1.plot(range(0, len(MA250)), MA250, label='MA250')
+
+plt.legend()
 
 #fig2.plot(range(0, len(MA99Dif)), MA99Dif)
 
