@@ -6,7 +6,7 @@ from algorithm import *
 import matplotlib.pyplot as plt
 
 
-fileName = "dump5.txt"
+fileName = "dump.txt"
 data = []
 
 
@@ -135,12 +135,14 @@ for n in range(0, len(data)):
         if(shouldBuy(dataBuf, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
 
             print("Buy at {:.4f}".format(dataBuf[curPos]))
-            fig1.annotate('B', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+            #fig1.annotate('B', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
             if(not midTrade):
 
                 midTrade = True
                 buyPrice = dataBuf[curPos]
+
+                fig1.annotate('Bought', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
 
 
@@ -148,16 +150,32 @@ for n in range(0, len(data)):
         if(shouldSell(dataBuf, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
             print("Sell at {:.4f}".format(dataBuf[curPos]))
 
-            fig1.annotate('S', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+            #fig1.annotate('S', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
             if(midTrade):
 
                 percReturn = ((dataBuf[curPos] - buyPrice) / buyPrice) * 100
 
-                if(percReturn > 0.5):
+                if(percReturn > 0.05):
 
                     midTrade = False
                     trades.append([buyPrice, dataBuf[curPos], percReturn])
+
+                    fig1.annotate('Sold', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+
+        if(midTrade):
+
+            percReturn = ((dataBuf[curPos] - buyPrice) / buyPrice) * 100
+
+            if(percReturn < -1.0):
+                print("Stop Loss -1.0%")
+            elif(percReturn < -0.5):
+                print("Stop Loss -0.5%")
+            """elif(percReturn < -0.25):
+                print("Stop Loss -0.25%")
+            elif(percReturn < -0.1):
+                print("Stop Loss -0.1%")"""
+
 
     #plt.pause(0.01)
 

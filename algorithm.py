@@ -4,12 +4,12 @@ from liveAnalysis import *
 
 
 #trading constants
-buyMAThreshold = 2.5
+buyMAThreshold = 3.5
 MA99GradientThreshold = -0.13
 MA250GradientThreshold = 0
 buyMA99DifThreshold = -5
 
-sellMAThreshold = 2.5
+sellMAThreshold = 3.5
 sellMA99DifThreshold = 5
 
 """
