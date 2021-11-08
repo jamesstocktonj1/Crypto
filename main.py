@@ -155,10 +155,8 @@ def printTotalReturn():
         if(t[2] > highestReturn):
             highestReturn = t[2]
 
-    totalReturn += 1
-
     print("Total Return {:.3f}%".format(totalReturn))
-    print("Higheest Return {:.3f}%".format(highestReturn))
+    print("Highest Return {:.3f}%".format(highestReturn))
 
 
 
