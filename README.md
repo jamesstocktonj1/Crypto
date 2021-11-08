@@ -30,6 +30,49 @@ Return Summary
 Total Return 4.172%
 Highest Return 0.512%
 ```
+Another dataset shows the following results:
+```text
+Completed Trades
+Trade Complete: Buy 4729.2415   Sell 4734.5739  Return 0.113%
+Trade Complete: Buy 4729.8030   Sell 4734.5739  Return 0.101%
+Trade Complete: Buy 4729.3644   Sell 4743.2668  Return 0.294%
+Trade Complete: Buy 4730.9249   Sell 4743.2668  Return 0.261%
+Trade Complete: Buy 4731.2851   Sell 4743.2668  Return 0.253%
+Trade Complete: Buy 4729.0458   Sell 4739.1069  Return 0.213%
+Trade Complete: Buy 4731.1058   Sell 4747.6510  Return 0.350%
+Trade Complete: Buy 4740.8027   Sell 4747.6510  Return 0.144%
+Trade Complete: Buy 4737.8224   Sell 4747.6510  Return 0.207%
+Trade Complete: Buy 4740.6934   Sell 4750.1482  Return 0.199%
+Trade Complete: Buy 4735.2339   Sell 4758.0891  Return 0.483%
+Trade Complete: Buy 4748.3085   Sell 4758.0891  Return 0.206%
+Trade Complete: Buy 4750.7189   Sell 4758.0891  Return 0.155%
+Trade Complete: Buy 4748.4645   Sell 4760.7674  Return 0.259%
+Trade Complete: Buy 4751.0280   Sell 4760.7674  Return 0.205%
+Trade Complete: Buy 4748.4460   Sell 4760.8497  Return 0.261%
+Trade Complete: Buy 4753.1618   Sell 4760.8497  Return 0.162%
+Trade Complete: Buy 4754.6065   Sell 4761.6988  Return 0.149%
+Trade Complete: Buy 4757.9240   Sell 4771.4011  Return 0.283%
+Trade Complete: Buy 4759.4441   Sell 4771.4011  Return 0.251%
+Trade Complete: Buy 4757.9027   Sell 4771.4011  Return 0.284%
+Trade Complete: Buy 4757.7932   Sell 4772.1734  Return 0.302%
+Trade Complete: Buy 4759.6146   Sell 4765.8516  Return 0.131%
+Trade Complete: Buy 4766.2599   Sell 4772.3821  Return 0.128%
+Trade Complete: Buy 4769.7468   Sell 4779.1046  Return 0.196%
+Trade Complete: Buy 4771.4874   Sell 4779.1046  Return 0.160%
+Trade Complete: Buy 4773.3186   Sell 4779.1046  Return 0.121%
+Trade Complete: Buy 4771.4836   Sell 4778.5662  Return 0.148%
+
+Open Trades
+Buy 4769.6398   Return 0.098%
+Buy 4779.9671   Return -0.118%
+Buy 4780.2626   Return -0.124%
+Buy 4781.0955   Return -0.141%
+Buy 4778.5601   Return -0.088%
+
+Return Summary
+Total Return 7.021%
+Highest Return 0.483%
+```
 
 The "Total Return" value generated is simply the sum of all the returns of each trade. The actual value should be higher due to compound interest of all the simultaneous trades. These are very promising results but more data is still needed to try and refine these values.
 
