@@ -150,12 +150,12 @@ def printTotalReturn():
     totalReturn = 1
 
     for t in comTrades:
-        totalReturn *= (t[2] + 1)
+        totalReturn += t[2]
 
         if(t[2] > highestReturn):
             highestReturn = t[2]
 
-    totalReturn -= 1
+    totalReturn += 1
 
     print("Total Return {:.3f}%".format(totalReturn))
     print("Higheest Return {:.3f}%".format(highestReturn))
