@@ -59,6 +59,10 @@ def shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)
     #when there is a peak in MA7 and the difference between MA99 and the trading price is large then stock is potentially bought
     sellState = sellState or (isPeak(MA7D, 1) and ((data[curPos] - MA99[curPos]) > sellMA99DifThreshold))
 
+    #if the overall high is reached then a potential sell is in place
+    #sellState = sellState or(isPeak(MA250D, 5))
+
+
     return sellState
 
 
@@ -71,6 +75,11 @@ def shouldBuy(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
 
     #the following is a more agressive way of buying/selling but the threshold should be high
     #when there is a trough in MA7 and the difference between MA99 and the trading price is large then stock is potentially bought
-    buyState = buyState or (isTrough(MA7D, 1) and ((MA99[curPos] - data[curPos])  < buyMA99DifThreshold))
+    buyState = buyState or (isTrough(MA7D, 1) and ((MA99[curPos] - data[curPos])  > buyMA99DifThreshold))
+
+    #if an overall low is reached then a potential buy is in place
+    if(None not in MA250D[(curPos - 10):(curPos + 1)]):
+        buyState = buyState or (isTrough(MA250D, 1))
+        print("Low Point at {}".format(curPos))
 
     return buyState

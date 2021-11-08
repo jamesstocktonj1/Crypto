@@ -47,17 +47,16 @@ MA25D = []
 MA99D = []
 MA250D = []
 
-MA99Dif = []
-
 
 fig1 = plt.subplot(1, 1, 1)
 #fig2 = plt.subplot(2, 1, 2)
 
 
 #used for calculating rough profits
-midTrade = False
-buyPrice = 0
+numTrades = 0
+buyPrice = []
 trades = []
+curTrade = 0
 
 
 #a for loop is used to simulate real time trading values coming in
@@ -84,10 +83,8 @@ for n in range(0, len(data)):
     
     if(curPos > 100):
         MA99.append(runningIntegral(dataBuf[(curPos - 99):(curPos + 1)], 99))
-        MA99Dif.append(dataBuf[curPos] - MA99[curPos])
     else:
         MA99.append(None)
-        MA99Dif.append(None)
 
     if(curPos > 251):
         MA250.append(runningIntegral(dataBuf[(curPos - 250):(curPos + 1)], 250))
@@ -137,12 +134,12 @@ for n in range(0, len(data)):
             print("Buy at {:.4f}".format(dataBuf[curPos]))
             #fig1.annotate('B', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
-            if(not midTrade):
+            if(numTrades < 4):
 
-                midTrade = True
-                buyPrice = dataBuf[curPos]
+                numTrades += 1
+                buyPrice.append(curPos)
 
-                fig1.annotate('Bought', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+                fig1.annotate("Buy {}".format(numTrades), xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
 
 
@@ -152,29 +149,39 @@ for n in range(0, len(data)):
 
             #fig1.annotate('S', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
-            if(midTrade):
+            if(numTrades > 0):
 
-                percReturn = ((dataBuf[curPos] - buyPrice) / buyPrice) * 100
+                for p in buyPrice:
 
-                if(percReturn > 0.05):
+                    percReturn = ((dataBuf[curPos] - dataBuf[p]) / dataBuf[p]) * 100
 
-                    midTrade = False
-                    trades.append([buyPrice, dataBuf[curPos], percReturn])
+                    if(percReturn > 0.05):
 
-                    fig1.annotate('Sold', xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
+                        trades.append([p, curPos, percReturn])
 
-        if(midTrade):
+                        fig1.annotate("Sell {}".format(buyPrice.index(p)), xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
-            percReturn = ((dataBuf[curPos] - buyPrice) / buyPrice) * 100
+                        fig1.plot([p, curPos], [dataBuf[p], dataBuf[curPos]])
 
-            if(percReturn < -1.0):
-                print("Stop Loss -1.0%")
-            elif(percReturn < -0.5):
-                print("Stop Loss -0.5%")
-            """elif(percReturn < -0.25):
-                print("Stop Loss -0.25%")
-            elif(percReturn < -0.1):
-                print("Stop Loss -0.1%")"""
+                        numTrades -= 1
+                        buyPrice.remove(p)
+
+        if(numTrades > 0):
+
+            for p in buyPrice:
+
+                percReturn = ((dataBuf[curPos] - p) / p) * 100
+
+                if(percReturn < -1.0):
+                    pass
+                    #print("Stop Loss -1.0%")
+                elif(percReturn < -0.5):
+                    pass
+                    #print("Stop Loss -0.5%")
+                """elif(percReturn < -0.25):
+                    print("Stop Loss -0.25%")
+                elif(percReturn < -0.1):
+                    print("Stop Loss -0.1%")"""
 
 
     #plt.pause(0.01)
@@ -194,8 +201,9 @@ plt.legend()
 for t in trades:
     print("Buy: {:.4f}\tSell: {:.4f}\tReturn: {:.2f}".format(float(t[0]), float(t[1]), float(t[2])))
 
-if midTrade:
-    print("Mid-Trade Buy: {:.4f}".format(buyPrice))
+if(numTrades > 0):
+    for t in buyPrice:
+        print("Mid-Trade Buy: {:.4f}".format(t))
 
 
 plt.show()
