@@ -30,7 +30,7 @@ Additional:
 
 ## Command Line Non-Live Algorithm
 
-Using the proposed trading conditions found in the [master](https://github.com/jamesstocktonj1/Crypto#algorithm-finalisation) readme, I created this branch to develop the command line implementation. The final product will be deployed on a non-graphical server so all the graphical plots will be generated in a seperate program (or potentially a website).
+Using the proposed trading conditions listed above, I created the [cmd-pre-live](https://github.com/jamesstocktonj1/Crypto/tree/cmd-pre-live) branch to develop the command line implementation of this algorithm. The final product will be deployed on a non-graphical server so all the graphical plots will be generated in a seperate program (or potentially a website).
 
 First implementation using the tuned values from [graphical-pre-live](https://github.com/jamesstocktonj1/Crypto/tree/graphical-pre-live) shows promising results from the 4 hour live data file. The data is as followed:
 
