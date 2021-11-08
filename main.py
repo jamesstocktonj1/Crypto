@@ -135,6 +135,21 @@ def performTrades(curPos):
                     print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
 
 
+def clearValues():
+
+    data = []
+
+    MA7 = []
+    MA25 = []
+    MA99 = []
+    MA250 = []
+
+    MA7D = []
+    MA25D = []
+    MA99D = []
+    MA250D = []
+
+
 def printCurrentTrades():
 
     print("\nOpen Trades")
@@ -162,6 +177,8 @@ def printTotalReturn():
     print("Total Return {:.3f}%".format(totalReturn))
     print("Highest Return {:.3f}%".format(highestReturn))
 
+    return totalReturn, highestReturn
+
 
 def logTrades():
 
@@ -171,6 +188,10 @@ def logTrades():
         f.write("{},{},{:.3f}\n".format(t[0], t[1], t[2]))
     
     f.close()
+
+
+def setTrading(a, b, c, d, e, f, g, h):
+    setTradingConstants(a, b, c, d, e, f, g, h)
 
 
 
@@ -195,9 +216,11 @@ def mainLoop():
         curPos += 1
 
     printCurrentTrades()
-    printTotalReturn()
+    totalReturn, hightestReturn = printTotalReturn()
 
     logTrades()
+
+    return totalReturn, hightestReturn
 
     
 

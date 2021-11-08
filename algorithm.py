@@ -30,7 +30,16 @@ MA99D = []
 MA250D = []
 """
 
+def setTradingConstants(a, b, c, d, e, f, g, h):
+    buyMAThreshold = a
+    MA99GradientThreshold = b
+    MA250GradientThreshold = c
+    buyMA99DifThreshold = d
+    buyMA250DifThreshold = e
 
+    sellMAThreshold = f
+    sellMA99DifThreshold = g
+    buyMA250DifThreshold = h
 
 
 def shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
