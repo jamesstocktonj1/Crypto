@@ -5,14 +5,14 @@ from liveAnalysis import *
 
 #trading constants
 buyMAThreshold = 2.5
-MA99GradientThreshold = -0.13
-MA250GradientThreshold = 0
-buyMA99DifThreshold = -5
-buyMA250DifThreshold = -10
+MA99GradientThreshold = -0.1
+MA250GradientThreshold = 0.01
+buyMA99DifThreshold = 5
+buyMA250DifThreshold = 5
 
 sellMAThreshold = 2.5
 sellMA99DifThreshold = 5
-buyMA250DifThreshold = -10
+buyMA250DifThreshold = 5
 
 """
 data used is as followed
@@ -56,6 +56,7 @@ def shouldBuy(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
     buyState = buyState or (isTrough(MA7D) and ((MA99[curPos] - data[curPos]) > buyMA99DifThreshold))
 
     #when MA250 is at a trough
-    buyState = buyState or isTrough(MA250D)
+    buyState = buyState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isTrough(MA25D))
+    #buyState = buyState or isTrough(MA250D)
 
     return buyState

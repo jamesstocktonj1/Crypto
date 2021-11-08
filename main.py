@@ -9,7 +9,7 @@ from algorithm import *
 
 
 #file import
-fileName = "dump.txt"
+fileName = "dump12.txt"
 filePoint = 0
 fileData = []
 dataAvailable = True
@@ -38,11 +38,14 @@ MA250D = []
 
 
 #trading values
-maxTrades = 5
+maxTrades = 20
 curTrades = []
 comTrades = []
 
-returnThreshold = 0.1
+returnThreshold = 0.15
+
+#trading file export
+tradeFile = "trad.txt"
 
 #allows enough of an initial buffer to be built (long term integral and differential values)
 startTradingPoint = 350
@@ -126,7 +129,7 @@ def performTrades(curPos):
                 if(percReturn > returnThreshold):
 
                     #append completed trade to list and remove from current list
-                    comTrades.append([data[t], data[curPos], percReturn])
+                    comTrades.append([t, curPos, percReturn])
                     curTrades.remove(t)
 
                     print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
@@ -155,10 +158,19 @@ def printTotalReturn():
         if(t[2] > highestReturn):
             highestReturn = t[2]
 
+    print("Number of Trades {}".format(len(comTrades)))
     print("Total Return {:.3f}%".format(totalReturn))
     print("Highest Return {:.3f}%".format(highestReturn))
 
 
+def logTrades():
+
+    f = open(tradeFile, "w")
+
+    for t in comTrades:
+        f.write("{},{},{:.3f}\n".format(t[0], t[1], t[2]))
+    
+    f.close()
 
 
 
@@ -184,6 +196,8 @@ def mainLoop():
 
     printCurrentTrades()
     printTotalReturn()
+
+    logTrades()
 
     
 
