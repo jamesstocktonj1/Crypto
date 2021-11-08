@@ -14,13 +14,13 @@ Using this data, I allowed the program to have a maximum of 5 concurrent trades 
 ## Algorithm Finalisation
 
 After working with and plotting various data using the Graphical Non-Live Algorithm I have finalised the conditions for trading.
-'''Text
+```Text
 Buy:
  - 
 
 Sell:
  - 
-'''
+```
 
 #### Disclaimer
 This code is non-functional and for concept only. Do not use to trade as I will not be responsible for any money lost.
