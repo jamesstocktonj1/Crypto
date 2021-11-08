@@ -161,7 +161,7 @@ for n in range(0, len(data)):
 
                         fig1.annotate("Sell {}".format(buyPrice.index(p)), xy=(curPos, dataBuf[curPos]), verticalalignment='bottom')
 
-                        fig1.plot([p, curPos], [dataBuf[p], dataBuf[curPos]])
+                        #fig1.plot([p, curPos], [dataBuf[p], dataBuf[curPos]])
 
                         numTrades -= 1
                         buyPrice.remove(p)
@@ -199,11 +199,14 @@ plt.legend()
 
 
 for t in trades:
-    print("Buy: {:.4f}\tSell: {:.4f}\tReturn: {:.2f}".format(float(t[0]), float(t[1]), float(t[2])))
+    print("Buy: {:.4f}\tSell: {:.4f}\tReturn: {:.2f}".format(float(dataBuf[t[0]]), float(dataBuf[t[1]]), float(t[2])))
+    fig1.plot([t[0], t[1]], [dataBuf[t[0]], dataBuf[t[1]]], label="Return {:.2f}%".format(t[2]))
+
+plt.legend()
 
 if(numTrades > 0):
     for t in buyPrice:
-        print("Mid-Trade Buy: {:.4f}".format(t))
+        print("Mid-Trade Buy: {:.4f}".format(dataBuf[t]))
 
 
 plt.show()
