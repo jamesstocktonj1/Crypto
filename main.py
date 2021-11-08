@@ -133,12 +133,35 @@ def performTrades(curPos):
 
 
 def printCurrentTrades():
+
     print("\nOpen Trades")
 
     for t in curTrades:
         percReturn = ((data[len(data) - 1] - data[t]) / data[t]) * 100
 
         print("Buy {:.4f}\tReturn {:.3f}%".format(data[t], percReturn))
+
+
+def printTotalReturn():
+
+    print("\nReturn Summary")
+
+    highestReturn = 0
+    totalReturn = 1
+
+    for t in comTrades:
+        totalReturn *= (t[2] + 1)
+
+        if(t[2] > highestReturn):
+            highestReturn = t[2]
+
+    totalReturn -= 1
+
+    print("Total Return {:.3f}%".format(totalReturn))
+    print("Higheest Return {:.3f}%".format(highestReturn))
+
+
+
 
 
 def mainLoop():
@@ -162,6 +185,7 @@ def mainLoop():
         curPos += 1
 
     printCurrentTrades()
+    printTotalReturn()
 
     
 
