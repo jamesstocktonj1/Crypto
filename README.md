@@ -1,4 +1,4 @@
-## Initial Non-Live Algorithm
+## Graphical Non-Live Algorithm
 
 The initial concept of the algorithm shows promising using dummy data collected from live [ETH data](https://github.com/jamesstocktonj1/Crypto/blob/graphical-pre-live/dump5.txt). The graphical-pre.live branch shows the beginning steps of building the algorithm and refining the threshold values.
 
