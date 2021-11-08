@@ -16,7 +16,7 @@ Using this data, I allowed the program to have a maximum of 5 concurrent trades 
 After working with and plotting various data using the Graphical Non-Live Algorithm I have finalised the conditions for trading.
 ```Text
 Buy:
- - when MA25 is at a trough and the difference between MA99 and MA25 is large.
+ - when MA25 is at a trough and the difference between MA99 and MA25 is large and also the gradient of MA99 can't be less than a slightly negative slope.
  - when MA7 is at a trough and the difference between MA99 and the current value is large.
  - when MA250 is at a trough.
 
