@@ -80,5 +80,12 @@ After this I created the [graphics_main](https://github.com/jamesstocktonj1/Cryp
 
 <p align="center"><img src="https://github.com/jamesstocktonj1/Crypto/blob/main/media/cmd_graphic_output.png"></p>
 
+## Improved Trading Conditions
+
+After viewing lots of data through the graphics program, I noticed the algorithm would quite often miss a trough even though a sharp drop can be seen in the graph. After looking into this, it turns out that quite often, although there may be a trough in MA25, the difference between that and MA99 is not big enough for the algorithm to buy at that trough. This can be seen in the following graph where MA25 and MA99 move in parallel.
+
+<p align="center"><img src="https://github.com/jamesstocktonj1/Crypto/blob/main/media/paralel_integral.png"></p>
+
+
 #### Disclaimer
 This code is non-functional and for concept only. Do not use to trade as I will not be responsible for any money lost.
