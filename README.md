@@ -78,7 +78,7 @@ The "Total Return" value generated is simply the sum of all the returns of each 
 
 After this I created the [graphics_main](https://github.com/jamesstocktonj1/Crypto/blob/cmd-pre-live/graphics_main.py) which takes the trade file dumped by the command line program and then plots it in matplotlib. This allows the command line to be run on a non-graphical server, and then the files to be copied and then analysed on a graphical computer. This means we can check how the trading algorithm is performing. An example graph generated can be seen below.
 
-<p align="center"><img src="https://github.com/jamesstocktonj1/Crypto/blob/graphical-pre-live/media/cmd_graphic_output.png"></p>
+<p align="center"><img src="https://github.com/jamesstocktonj1/Crypto/blob/main/media/cmd_graphic_output.png"></p>
 
 #### Disclaimer
 This code is non-functional and for concept only. Do not use to trade as I will not be responsible for any money lost.
