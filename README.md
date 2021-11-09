@@ -86,6 +86,8 @@ After viewing lots of data through the graphics program, I noticed the algorithm
 
 <p align="center"><img src="https://github.com/jamesstocktonj1/Crypto/blob/main/media/paralel_integral.png"></p>
 
+Therefore I added a function in the liveAnalysis file which takes in two data sets and finds out the area in between the two graphs since they last crossed over. In this case there would be a large area found in the graph above and therefore if the area is above a certain threshold then the algorithm will buy when MA25 is at a trough.
+
 
 #### Disclaimer
 This code is non-functional and for concept only. Do not use to trade as I will not be responsible for any money lost.
