@@ -9,10 +9,13 @@ MA99GradientThreshold = -0.1
 MA250GradientThreshold = 0.05
 buyMA99DifThreshold = 5
 buyMA250DifThreshold = 5
+areaUnderThreshold = 350
+buyMA250GradientThreshold = -0.075
 
 sellMAThreshold = 2.5
 sellMA99DifThreshold = 5
 sellMA250DifThreshold = 5
+
 
 """
 data used is as followed
@@ -74,8 +77,13 @@ def shouldBuy(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
     #when MA7 is at a trough and the difference between MA99 and the current value is large
     buyState = buyState or (isTrough(MA7D) and ((MA99[curPos] - data[curPos]) > buyMA99DifThreshold))
 
+    #when MA25 is at a trough and the area under the graph is large then buy
+    buyState = buyState or (isTrough(MA25D) and (areaUnder(MA25, MA99) > areaUnderThreshold))
+
     #when MA250 is at a trough
     #buyState = buyState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isTrough(MA25D))
     #buyState = buyState or isTrough(MA250D)
+
+    buyState = buyState and (MA250D[curPos] > buyMA250GradientThreshold)
 
     return buyState
