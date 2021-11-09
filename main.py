@@ -9,7 +9,7 @@ from algorithm import *
 
 
 #file import
-fileName = "dump12.txt"
+fileName = "dump12_2.txt"
 filePoint = 0
 fileData = []
 dataAvailable = True
@@ -42,10 +42,17 @@ maxTrades = 20
 curTrades = []
 comTrades = []
 
+#buy conditions
 returnThreshold = 0.5
-highSell = 0.75
+highSell = 0.85
+buyBuyCooloff = 20
 
-buyCooloff = 30
+#sellconditions
+lowSell = -2.0
+longSellTime = 5000
+longSellReturn = 0.1
+buySellCooloff = 600
+
 
 #trading file export
 tradeFile = "trad.txt"
@@ -122,8 +129,13 @@ def performTrades(curPos):
         if(len(curTrades) > 0):
 
             #if there are more than one trade and it is after (buyCooloff) amount of time
-            if(((curPos - curTrades[len(curTrades) - 1]) > buyCooloff) and (len(curTrades) < maxTrades)):
-                curTrades.append(curPos)
+            if(((curPos - curTrades[len(curTrades) - 1]) > buyBuyCooloff) and (len(curTrades) < maxTrades)):
+
+                if(len(comTrades) == 0):
+                    curTrades.append(curPos)
+
+                elif(((curPos - comTrades[len(comTrades) - 1][1]) > buySellCooloff)):
+                    curTrades.append(curPos)
 
         else:
 
@@ -145,18 +157,33 @@ def performTrades(curPos):
                 print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
 
 
-
-        #check to see if there are any high points to take profit early (in case peak not detected)
-        for t in curTrades:
-            percReturn = ((data[curPos] - data[t]) / data[t]) * 100
-
-            if(percReturn > highSell):
+            elif(percReturn > highSell):
 
                 #append completed trade to list and remove from current list
                 comTrades.append([t, curPos, percReturn])
                 curTrades.remove(t)
 
                 print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+            
+            #stop long term loss
+            elif(((curPos - t) > longSellTime) and (percReturn > 0.1)):
+
+                #append completed trade to list and remove from current list
+                comTrades.append([t, curPos, percReturn])
+                curTrades.remove(t)
+
+                print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+
+            #stop loss
+            elif(percReturn < lowSell):
+
+                #append completed trade to list and remove from current list
+                comTrades.append([t, curPos, percReturn])
+                curTrades.remove(t)
+
+                print("Stop Loss: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+
+        
 
 
 def clearValues():
@@ -197,10 +224,20 @@ def printTotalReturn():
         if(t[2] > highestReturn):
             highestReturn = t[2]
 
-    print("Number of Trades {}".format(len(comTrades)))
+    print("Number of Closed Trades {}".format(len(comTrades)))
+    print("Number of Open Trades {}".format(len(curTrades)))
     print("Total Return {:.3f}%".format(totalReturn))
     print("Average Return {:.3f}%".format(totalReturn / len(comTrades)))
     print("Highest Return {:.3f}%".format(highestReturn))
+
+    #finish all current trades
+    for c in curTrades:
+
+        percReturn = ((data[len(data) - 1] - data[c]) / data[c]) * 100
+
+        comTrades.append([c, len(data) - 1, percReturn])
+
+
 
     return totalReturn, highestReturn
 
