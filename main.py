@@ -235,7 +235,7 @@ def printTotalReturn():
 
         percReturn = ((data[len(data) - 1] - data[c]) / data[c]) * 100
 
-        comTrades.append([c, len(data) - 1, percReturn])
+        #comTrades.append([c, len(data) - 1, percReturn])
 
 
 
