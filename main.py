@@ -43,6 +43,7 @@ curTrades = []
 comTrades = []
 
 returnThreshold = 0.15
+highSell = 0.75
 
 #trading file export
 tradeFile = "trad.txt"
@@ -135,6 +136,20 @@ def performTrades(curPos):
                     print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
 
 
+
+        #check to see if there are any high points to take profit early (in case peak not detected)
+        for t in curTrades:
+            percReturn = ((data[curPos] - data[t]) / data[t]) * 100
+
+            if(percReturn > highSell):
+
+                #append completed trade to list and remove from current list
+                comTrades.append([t, curPos, percReturn])
+                curTrades.remove(t)
+
+                print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+
+
 def clearValues():
 
     data = []
@@ -165,7 +180,7 @@ def printTotalReturn():
     print("\nReturn Summary")
 
     highestReturn = 0
-    totalReturn = 1
+    totalReturn = 0
 
     for t in comTrades:
         totalReturn += t[2]
@@ -175,6 +190,7 @@ def printTotalReturn():
 
     print("Number of Trades {}".format(len(comTrades)))
     print("Total Return {:.3f}%".format(totalReturn))
+    print("Average Return {:.3f}%".format(totalReturn / len(comTrades)))
     print("Highest Return {:.3f}%".format(highestReturn))
 
     return totalReturn, highestReturn
@@ -190,8 +206,8 @@ def logTrades():
     f.close()
 
 
-def setTrading(a, b, c, d, e, f, g, h):
-    setTradingConstants(a, b, c, d, e, f, g, h)
+def setTrading(a):
+    setTradingConstants(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7])
 
 
 
@@ -215,6 +231,7 @@ def mainLoop():
 
         curPos += 1
 
+    printTradingConstants()
     printCurrentTrades()
     totalReturn, hightestReturn = printTotalReturn()
 
@@ -222,17 +239,6 @@ def mainLoop():
 
     return totalReturn, hightestReturn
 
-    
 
-
-
-
-
-
-mainLoop()
-
-
-
-
-
-
+if __name__ == "__main__":
+    mainLoop()
