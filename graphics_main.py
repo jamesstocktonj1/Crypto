@@ -45,9 +45,30 @@ def createGraph():
     #plot ETH data
     fig1.plot(range(0, len(data)), data)
 
-    #plot trades
+
+    justReturns = []
+
+    buyVal = []
+    sellVal = []
+    returnVal = []
+
+    sortedReturn = []
+
     for t in trades:
-        fig1.plot([t[0], t[1]], [data[t[0]], data[t[1]]], label="Return {:.3f}".format(t[2]))
+        buyVal.append(t[0])
+        sellVal.append(t[1])
+        returnVal.append(t[2])
+
+        sortedReturn.append(t[2])
+
+    sortedReturn.sort(reverse=True)
+    
+
+    #plot trades
+    for t in sortedReturn:
+        
+        n = returnVal.index(t)
+        fig1.plot([buyVal[n], sellVal[n]], [data[buyVal[n]], data[sellVal[n]]], label="Return {:.3f}".format(t))
 
     plt.legend()
     plt.show()
