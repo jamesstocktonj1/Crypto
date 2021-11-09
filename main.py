@@ -42,8 +42,10 @@ maxTrades = 20
 curTrades = []
 comTrades = []
 
-returnThreshold = 0.15
+returnThreshold = 0.5
 highSell = 0.75
+
+buyCooloff = 30
 
 #trading file export
 tradeFile = "trad.txt"
@@ -113,27 +115,34 @@ def getNextValue(curPos):
 
 #perform trades
 def performTrades(curPos):
+    
+    #check buy conditions
+    if(shouldBuy(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
 
-    #only perform trades if available
-    if(len(curTrades) < maxTrades):
+        if(len(curTrades) > 0):
 
-        if(shouldBuy(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
+            #if there are more than one trade and it is after (buyCooloff) amount of time
+            if(((curPos - curTrades[len(curTrades) - 1]) > buyCooloff) and (len(curTrades) < maxTrades)):
+                curTrades.append(curPos)
+
+        else:
+
+            #perform trade if curTrades is equal to 0
             curTrades.append(curPos)
 
-    else:
 
-        if(shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
-            
-            for t in curTrades:
-                percReturn = ((data[curPos] - data[t]) / data[t]) * 100
+    if(shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
+        
+        for t in curTrades:
+            percReturn = ((data[curPos] - data[t]) / data[t]) * 100
 
-                if(percReturn > returnThreshold):
+            if(percReturn > returnThreshold):
 
-                    #append completed trade to list and remove from current list
-                    comTrades.append([t, curPos, percReturn])
-                    curTrades.remove(t)
+                #append completed trade to list and remove from current list
+                comTrades.append([t, curPos, percReturn])
+                curTrades.remove(t)
 
-                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+                print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
 
 
 
