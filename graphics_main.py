@@ -68,7 +68,12 @@ def createGraph():
     for t in sortedReturn:
         
         n = returnVal.index(t)
-        fig1.plot([buyVal[n], sellVal[n]], [data[buyVal[n]], data[sellVal[n]]], label="Return {:.3f}".format(t))
+
+        #only mark legend with the first (x) highest returns
+        if(n < 5):
+            fig1.plot([buyVal[n], sellVal[n]], [data[buyVal[n]], data[sellVal[n]]], label="Return {:.3f}".format(t))
+        else:
+            fig1.plot([buyVal[n], sellVal[n]], [data[buyVal[n]], data[sellVal[n]]])
 
     plt.legend()
     plt.show()
