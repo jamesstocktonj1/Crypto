@@ -4,16 +4,23 @@ from liveAnalysis import *
 
 
 #trading constants
-buyMAThreshold = 3.5
-MA99GradientThreshold = -0.13
-MA250GradientThreshold = 0
-buyMA99DifThreshold = -5
+buyMAThreshold = 2.5
+MA99GradientThreshold = -0.1
+MA250GradientThreshold = 0.05
+buyMA99DifThreshold = 5
+buyMA250DifThreshold = 5
+areaUnderThreshold = 350
+buyMA250GradientThreshold = -0.075
 
-sellMAThreshold = 3.5
+sellMAThreshold = 2.5
 sellMA99DifThreshold = 5
+sellMA250DifThreshold = 5
+
 
 """
 data used is as followed
+
+data = []
 
 MA7 = []
 MA25 = []
@@ -26,42 +33,36 @@ MA99D = []
 MA250D = []
 """
 
-def nothingNone(MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
-    isNone = False
-    try:
-        isNone = isNone or (None in MA7[curPos])
-        isNone = isNone or (None in MA25[curPos])
-        isNone = isNone or (None in MA99[curPos])
-        isNone = isNone or (None in MA250[curPos])
-
-        isNone = isNone or (None in MA7D[curPos])
-        isNone = isNone or (None in MA25D[curPos])
-        isNone = isNone or (None in MA99D[curPos])
-        isNone = isNone or (None in MA250D[curPos])
-    except:
-        return False
-
-    return not isNone
+def printTradingConstants():
+    print([buyMAThreshold, MA99GradientThreshold, MA250GradientThreshold, buyMA99DifThreshold, buyMA250DifThreshold, sellMAThreshold, sellMA99DifThreshold, sellMA250DifThreshold])
 
 
+def setTradingConstants(a, b, c, d, e, f, g, h):
+    global buyMAThreshold, MA99GradientThreshold, MA250GradientThreshold, buyMA99DifThreshold, buyMA250DifThreshold
+    global sellMAThreshold, sellMA99DifThreshold, sellMA250DifThreshold
 
+    buyMAThreshold = a
+    MA99GradientThreshold = b
+    MA250GradientThreshold = c
+    buyMA99DifThreshold = d
+    buyMA250DifThreshold = e
 
-
+    sellMAThreshold = f
+    sellMA99DifThreshold = g
+    sellMA250DifThreshold = h
 
 
 def shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
     sellState = False
 
-    #when there is a peak in MA25 and the difference between MA99 and MA25 is large then stock is potentially bought
-    sellState = sellState or (isPeak(MA25D, 1) and ((MA25[curPos] - MA99[curPos]) > sellMAThreshold))
+    #when MA25 is at a peak and the difference betweeen MA25 and MA99 is large
+    sellState = sellState or (isPeak(MA25D) and ((MA25[curPos] - MA99[curPos]) > sellMAThreshold))
 
-    #the following is a more agressive way of buying/selling but the threshold should be high
-    #when there is a peak in MA7 and the difference between MA99 and the trading price is large then stock is potentially bought
-    sellState = sellState or (isPeak(MA7D, 1) and ((data[curPos] - MA99[curPos]) > sellMA99DifThreshold))
+    #when MA7 is at a trough and the difference between the current value and MA99 is large
+    sellState = sellState or (isPeak(MA7D) and ((data[curPos] - MA99[curPos]) > sellMA99DifThreshold))
 
-    #if the overall high is reached then a potential sell is in place
-    #sellState = sellState or(isPeak(MA250D, 5))
-
+    #when MA250 is at a peak
+    #sellState = sellState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isPeak(MA25D))
 
     return sellState
 
@@ -70,16 +71,19 @@ def shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)
 def shouldBuy(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos):
     buyState = False
 
-    #when there is a trough in MA25 and the difference between MA99 and MA25 is large then stock is potentially bought
-    buyState = buyState or (isTrough(MA25D, 1) and ((MA99[curPos] - MA25[curPos]) > buyMAThreshold))
+    #when MA25 is at a trough and the difference between MA99 and MA25 is large and also the gradient of MA99 can't be less than a slightly negative slope
+    buyState = buyState or (isTrough(MA25D) and ((MA99[curPos] - MA25[curPos]) > buyMAThreshold) and (MA99D[curPos] > MA99GradientThreshold))
 
-    #the following is a more agressive way of buying/selling but the threshold should be high
-    #when there is a trough in MA7 and the difference between MA99 and the trading price is large then stock is potentially bought
-    buyState = buyState or (isTrough(MA7D, 1) and ((MA99[curPos] - data[curPos])  > buyMA99DifThreshold))
+    #when MA7 is at a trough and the difference between MA99 and the current value is large
+    buyState = buyState or (isTrough(MA7D) and ((MA99[curPos] - data[curPos]) > buyMA99DifThreshold))
 
-    #if an overall low is reached then a potential buy is in place
-    if(None not in MA250D[(curPos - 10):(curPos + 1)]):
-        buyState = buyState or (isTrough(MA250D, 1))
-        print("Low Point at {}".format(curPos))
+    #when MA25 is at a trough and the area under the graph is large then buy
+    buyState = buyState or (isTrough(MA25D) and (areaUnder(MA25, MA99) > areaUnderThreshold))
+
+    #when MA250 is at a trough
+    #buyState = buyState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isTrough(MA25D))
+    #buyState = buyState or isTrough(MA250D)
+
+    buyState = buyState and (MA250D[curPos] > buyMA250GradientThreshold)
 
     return buyState

@@ -40,3 +40,27 @@ def isTrough(data, size = 1):
 
 
 
+
+#compares two waves and finds the area between then since their last crossover
+def areaUnder(data1, data2):
+    dataSize = len(data1) - 1
+
+    #takes not of the 
+    is1Higher = (data1[dataSize] < data2[dataSize])
+
+    areaTotal = 0
+
+    for i in range(0, len(data1)):
+
+        #checks if paths havent crossed over
+        if(is1Higher and (data1[dataSize - (i + 1)] < data2[dataSize - (i + 1)])):
+
+            areaTotal += abs(data1[dataSize - i] - data2[dataSize - i])
+
+        else:
+            #return area
+            return areaTotal
+
+    return areaTotal
+
+
