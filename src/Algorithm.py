@@ -1,14 +1,21 @@
+#parent object oriented trading algorithm implementation
 
 
+from .Analysis import *
 
 
-
+#12 hour buffer size
+maxBufferSize = 12 * 60 * 60
 
 
 class Algorithm:
 
+    uLongDataSize = 1000
+
 
     def __init__(self):
+
+        #data buffer values
         self.data = []
 
         self.MA7 = []
@@ -23,7 +30,20 @@ class Algorithm:
         self.MA250D = []
         self.uLongD = []
 
+        self.runningAverage = 0
+
         self.curPos = 0
+
+        #constant definitions
+        curTrades = []
+
+        self.newCurTrade = False
+
+    #resize the buffer
+    def resizeBuffe(self):
+
+        if(len(self.data) > maxBufferSize):
+            self.data = self.data[(len(self.data) - maxBufferSize):len(self.data)]
 
     #add new current value to the buffer
     def addValue(self, value):
@@ -55,6 +75,11 @@ class Algorithm:
         else:
             self.MA250.append(None)
 
+        if(self.curPos > (uLongDataSize + 1)):
+            self.uLong.append(runningIntegral(self.data[(self.curPos - uLongDataSize):(self.curPos + 1)], uLongDataSize))
+        else:
+            self.uLong.append(None)
+
         
         #generate runningDifferential values
         if(self.curPos > 13):
@@ -77,6 +102,13 @@ class Algorithm:
         else:
             self.MA250D.append(None)
 
+        if(self.curPos > (uLongDataSize + 1)):
+            self.uLongD.append(runningDifferential(self.uLong[(self.curPos - 5):(self.curPos + 1)]))
+        else:
+            self.uLongD.append(None)
+
+        self.runningAverage = sum(data) / len(data)
+
 
     #algorithm design in child class
     def shouldSell(self):
@@ -93,4 +125,8 @@ class Algorithm:
 
     #returns dictionary entry of completed trade
     def getCompleteTrade(self):
-        return None[]
+        return None
+
+    #returns array of current trades
+    def getCurrentTrades(self):
+        return curTrades
