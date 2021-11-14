@@ -30,7 +30,7 @@ highSell = 0.85
 buyBuyCooloff = 30
 
 #sellconditions
-lowSell = -1.5
+lowSell = -2.0
 longSellTime = 5000
 longSellReturn = 0.1
 buySellCooloff = 600
@@ -85,9 +85,15 @@ class SimpleAlgorithm(Algorithm):
         self.latestOpenTrades = []
         self.latestClosedTrades = []
 
+        self.newCurTrade = False
+        self.newComTrade = False
+
+        if(self.totalPosition < startTradingPoint):
+            return None
+
 
         #check buy conditions
-        if(shouldBuy()):
+        if(self.shouldBuy()):
 
             if(len(self.curTrades) > 0):
 
@@ -95,63 +101,73 @@ class SimpleAlgorithm(Algorithm):
                 if(((self.totalPosition - self.curTrades[len(self.curTrades) - 1]['openTime']) > buyBuyCooloff) and (len(self.curTrades) < maxTrades)):
 
                     if(len(self.comTrades) == 0):
-                        self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+                        self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': self.data[self.curPos], 'closePrice': 0, 'percReturn': 0})
 
-                        self.latestClosedTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+                        self.latestOpenTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': self.data[self.curPos], 'closePrice': 0, 'percReturn': 0})
 
                     
                     elif(((self.totalPosition - self.comTrades[len(self.comTrades) - 1]['closeTime']) > buySellCooloff)):
-                        self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+                        self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': self.data[self.curPos], 'closePrice': 0, 'percReturn': 0})
 
-                        self.latestClosedTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+                        self.latestOpenTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': self.data[self.curPos], 'closePrice': 0, 'percReturn': 0})
 
             else:
 
                 #perform trade if curTrades is equal to 0
-                self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+                self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': self.data[self.curPos], 'closePrice': 0, 'percReturn': 0})
 
-                self.latestClosedTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+                self.latestOpenTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': self.data[self.curPos], 'closePrice': 0, 'percReturn': 0})
 
 
-        if(shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
+        if(self.shouldSell()):
             
-            for t in curTrades:
-                percReturn = ((data[curPos] - data[t]) / data[t]) * 100
+            for t in self.curTrades:
+                percReturn = ((self.data[self.curPos] - t['openPrice']) / t['openPrice']) * 100
 
                 if(percReturn > returnThreshold):
 
                     #append completed trade to list and remove from current list
-                    comTrades.append([t, curPos, percReturn])
-                    curTrades.remove(t)
+                    self.comTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
 
-                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+                    self.latestClosedTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
+
+                    self.curTrades.remove(t)
 
 
                 elif(percReturn > highSell):
 
                     #append completed trade to list and remove from current list
-                    comTrades.append([t, curPos, percReturn])
-                    curTrades.remove(t)
+                    self.comTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
 
-                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+                    self.latestClosedTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
+                    
+                    self.curTrades.remove(t)
+
                 
                 #stop long term loss
-                elif(((curPos - t) > longSellTime) and (percReturn > 0.1)):
+                elif(((self.totalPosition - t['openTime']) > longSellTime) and (percReturn > 0.1)):
 
                     #append completed trade to list and remove from current list
-                    comTrades.append([t, curPos, percReturn])
-                    curTrades.remove(t)
+                    self.comTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
 
-                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+                    self.latestClosedTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
+                    
+                    self.curTrades.remove(t)
 
                 #stop loss
                 elif(percReturn < lowSell):
 
                     #append completed trade to list and remove from current list
-                    comTrades.append([t, curPos, percReturn])
-                    curTrades.remove(t)
+                    self.comTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
 
-                    print("Stop Loss: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+                    self.latestClosedTrades.append({'openTime': t['openTime'], 'closeTime': self.totalPosition, 'openPrice': t['openPrice'], 'closePrice': self.data[self.curPos], 'percReturn': percReturn})
+                    
+                    self.curTrades.remove(t)
+
+
+        #set new trade flags
+        self.newCurTrade = len(self.latestOpenTrades) != 0
+        self.newComTrade = len(self.latestClosedTrades) != 0
 
 
 

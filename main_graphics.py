@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 #import file
-importFileName = "continuousData.txt"
+importFileName = "continuousdata.txt"
 
 f = open(importFileName, "r")
 
@@ -42,7 +42,7 @@ for l in f:
 
 
     if(trading.newCompleteTrade()):
-        completeTrades.append(trading.getCompleteTrade())
+        completeTrades += trading.getLatestClosedTrades()
 
     
 #get remaining open trades
@@ -85,3 +85,4 @@ print("Lowest Return: {:.3f}%".format(min(returnList)))
 print("\nTotal Return: {:.4f}%".format(totalReturn))
 print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
 
+plt.show()

@@ -7,10 +7,11 @@ from .Analysis import *
 #12 hour buffer size
 maxBufferSize = 12 * 60 * 60
 
+uLongDataSize = 1000
 
 class Algorithm:
 
-    uLongDataSize = 1000
+    
 
 
     def __init__(self):
@@ -112,12 +113,12 @@ class Algorithm:
         else:
             self.MA250D.append(None)
 
-        if(self.curPos > (uLongDataSize + 1)):
+        if(self.curPos > (uLongDataSize + 6)):
             self.uLongD.append(runningDifferential(self.uLong[(self.curPos - 5):(self.curPos + 1)]))
         else:
             self.uLongD.append(None)
 
-        self.runningAverage = sum(data) / len(data)
+        self.runningAverage = sum(self.data) / len(self.data)
 
 
     #algorithm design in child class
@@ -133,18 +134,26 @@ class Algorithm:
     def executeTrade(self):
         pass
 
+    #gets the latest open trades
+    def getLatestOpenTrades(self):
+        return self.latestOpenTrades
+
+    #gets the latest closed trades
+    def getLatestClosedTrades(self):
+        return self.latestClosedTrades
+
     #returns bool whether a new completed trade has been made
     def newCompleteTrade(self):
-        return newCompleteTrade
+        return self.newComTrade
 
     #returns dictionary entry of completed trade
     def getCompleteTrade(self):
-        return None
+        return self.comTrades
         
     #returns bool whether a new trade should currently be open
     def newCurrentTrade(self):
-        return newCurrentTrade
+        return self.newCurTrade
 
     #returns array of current trades
     def getCurrentTrades(self):
-        return curTrades
+        return self.curTrades
