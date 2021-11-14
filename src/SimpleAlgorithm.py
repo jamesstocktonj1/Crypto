@@ -19,11 +19,30 @@ sellMA99DifThreshold = 5
 sellMA250DifThreshold = 5
 
 
+#trading values
+maxTrades = 20
+curTrades = []
+comTrades = []
+
+#buy conditions
+returnThreshold = 0.5
+highSell = 0.85
+buyBuyCooloff = 30
+
+#sellconditions
+lowSell = -1.5
+longSellTime = 5000
+longSellReturn = 0.1
+buySellCooloff = 600
+
+
+#allows enough of an initial buffer to be built (long term integral and differential values)
+startTradingPoint = 350
 
 
 class SimpleAlgorithm(Algorithm):
 
-    #algorithm design in child class
+    
     def shouldSell(self):
         sellState = False
 
@@ -38,7 +57,7 @@ class SimpleAlgorithm(Algorithm):
 
         return sellState
 
-    #algorithm design in child class
+    
     def shouldBuy(self):
         buyState = False
 
@@ -60,14 +79,84 @@ class SimpleAlgorithm(Algorithm):
         return buyState
 
 
-    #returns bool whether a new completed trade has been made
-    def newCompleteTrade(self):
-        return False
 
-    #returns dictionary entry of completed trade
+    def executeTrade(self):
+
+        self.latestOpenTrades = []
+        self.latestClosedTrades = []
+
+
+        #check buy conditions
+        if(shouldBuy()):
+
+            if(len(self.curTrades) > 0):
+
+                #if there are more than one trade and it is after (buyCooloff) amount of time
+                if(((self.totalPosition - self.curTrades[len(self.curTrades) - 1]['openTime']) > buyBuyCooloff) and (len(self.curTrades) < maxTrades)):
+
+                    if(len(self.comTrades) == 0):
+                        self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+
+                        self.latestClosedTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+
+                    
+                    elif(((self.totalPosition - self.comTrades[len(self.comTrades) - 1]['closeTime']) > buySellCooloff)):
+                        self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+
+                        self.latestClosedTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+
+            else:
+
+                #perform trade if curTrades is equal to 0
+                self.curTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+
+                self.latestClosedTrades.append({'openTime': self.totalPosition, 'closeTime': 0, 'openPrice': data[self.curPos], 'closeTime': 0, 'percReturn': 0})
+
+
+        if(shouldSell(data, MA7, MA25, MA99, MA250, MA7D, MA25D, MA99D, MA250D, curPos)):
+            
+            for t in curTrades:
+                percReturn = ((data[curPos] - data[t]) / data[t]) * 100
+
+                if(percReturn > returnThreshold):
+
+                    #append completed trade to list and remove from current list
+                    comTrades.append([t, curPos, percReturn])
+                    curTrades.remove(t)
+
+                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+
+
+                elif(percReturn > highSell):
+
+                    #append completed trade to list and remove from current list
+                    comTrades.append([t, curPos, percReturn])
+                    curTrades.remove(t)
+
+                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+                
+                #stop long term loss
+                elif(((curPos - t) > longSellTime) and (percReturn > 0.1)):
+
+                    #append completed trade to list and remove from current list
+                    comTrades.append([t, curPos, percReturn])
+                    curTrades.remove(t)
+
+                    print("Trade Complete: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+
+                #stop loss
+                elif(percReturn < lowSell):
+
+                    #append completed trade to list and remove from current list
+                    comTrades.append([t, curPos, percReturn])
+                    curTrades.remove(t)
+
+                    print("Stop Loss: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(data[t], data[curPos], percReturn))
+
+
+
+
+    
     def getCompleteTrade(self):
         return None
 
-    #returns array of current trades
-    def getCurrentTrades(self):
-        return curTrades

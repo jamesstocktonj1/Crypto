@@ -33,14 +33,23 @@ class Algorithm:
         self.runningAverage = 0
 
         self.curPos = 0
+        self.totalPosition = 0
+
+        #trading dictionary format
+        #{'openTime': 0, 'closeTime': 0, 'openPrice': 0, 'closeTime': 0, 'percReturn': 0}
 
         #constant definitions
-        curTrades = []
+        self.curTrades = []
+        self.comTrades = []
+
+        self.latestOpenTrades = []
+        self.latestClosedTrades = []
 
         self.newCurTrade = False
+        self.newComTrade = False
 
     #resize the buffer
-    def resizeBuffe(self):
+    def resizeBuffer(self):
 
         if(len(self.data) > maxBufferSize):
             self.data = self.data[(len(self.data) - maxBufferSize):len(self.data)]
@@ -50,6 +59,7 @@ class Algorithm:
         self.data.append(value)
 
         self.curPos = len(self.data) - 1
+        self.totalPosition += 1
 
     #run data analysis
     def calculateValues(self):
@@ -119,13 +129,21 @@ class Algorithm:
         return False
 
 
+    #executes the trading algorithm
+    def executeTrade(self):
+        pass
+
     #returns bool whether a new completed trade has been made
     def newCompleteTrade(self):
-        return False
+        return newCompleteTrade
 
     #returns dictionary entry of completed trade
     def getCompleteTrade(self):
         return None
+        
+    #returns bool whether a new trade should currently be open
+    def newCurrentTrade(self):
+        return newCurrentTrade
 
     #returns array of current trades
     def getCurrentTrades(self):
