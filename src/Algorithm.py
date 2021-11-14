@@ -5,9 +5,9 @@ from .Analysis import *
 
 
 #12 hour buffer size
-maxBufferSize = 12 * 60 * 60
+maxBufferSize = 120 * 60 * 60
 
-uLongDataSize = 1000
+uLongDataSize = 2000
 
 class Algorithm:
 
@@ -32,6 +32,7 @@ class Algorithm:
         self.uLongD = []
 
         self.runningAverage = 0
+        self.runningRunningAverage = []
 
         self.curPos = 0
         self.totalPosition = 0
@@ -119,6 +120,7 @@ class Algorithm:
             self.uLongD.append(None)
 
         self.runningAverage = sum(self.data) / len(self.data)
+        self.runningRunningAverage.append(self.runningAverage)
 
 
     #algorithm design in child class
@@ -156,4 +158,10 @@ class Algorithm:
 
     #returns array of current trades
     def getCurrentTrades(self):
+
+        for t in self.curTrades:
+            percReturn = ((self.data[self.curPos] - t['openPrice']) / t['openPrice']) * 100
+
+            self.curTrades[self.curTrades.index(t)]['percReturn'] = percReturn
+
         return self.curTrades

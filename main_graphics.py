@@ -3,6 +3,7 @@
 from src.Algorithm import *
 from src.SimpleAlgorithm import *
 import matplotlib.pyplot as plt
+import time
 
 
 #import file
@@ -21,7 +22,7 @@ incompleteTrades = []
 
 data = []
 
-
+startTime = time.time()
 
 #main file read loop
 for l in f:
@@ -44,18 +45,25 @@ for l in f:
     if(trading.newCompleteTrade()):
         completeTrades += trading.getLatestClosedTrades()
 
-    
+endTime = time.time()
+
+f.close()
+
 #get remaining open trades
 incompleteTrades = trading.getCurrentTrades()
 
 fig1 = plt.subplot(1, 1, 1)
 
 fig1.plot(range(0, len(data)), data)
+fig1.plot(range(0, len(trading.MA25)), trading.MA25)
+fig1.plot(range(0, len(trading.runningRunningAverage)), trading.runningRunningAverage)
 
+print("Last Point: {}".format(trading.totalPosition))
 
 
 
 totalReturn = 0
+complexReturn = 1
 returnList = []
 
 
@@ -68,6 +76,9 @@ for t in completeTrades:
 
     totalReturn += float(t['percReturn'])
     returnList.append(float(t['percReturn']))
+
+    #using 10x leverage
+    complexReturn *= ((float(t['percReturn'] / 100) * 10) + 1)
 
 
 print("Incomplete Trades")
@@ -83,6 +94,9 @@ print("\nHighest Return: {:.3f}%".format(max(returnList)))
 print("Lowest Return: {:.3f}%".format(min(returnList)))
 
 print("\nTotal Return: {:.4f}%".format(totalReturn))
+print("Compoung Return: {:.4f}%".format(complexReturn))
 print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
+
+print("\n{} data points analysed in {:.2f}s".format(len(data), (endTime - startTime)))
 
 plt.show()

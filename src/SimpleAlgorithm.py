@@ -25,19 +25,20 @@ curTrades = []
 comTrades = []
 
 #buy conditions
-returnThreshold = 0.5
-highSell = 0.85
+returnThreshold = 0.8
+highSell = 0.8
 buyBuyCooloff = 30
 
 #sellconditions
-lowSell = -2.0
-longSellTime = 5000
-longSellReturn = 0.1
+lowSell = -10.0
+longSellTime = 6000
+longSellReturn = 0.2
 buySellCooloff = 600
 
 
 #allows enough of an initial buffer to be built (long term integral and differential values)
-startTradingPoint = 350
+#startTradingPoint = 350
+startTradingPoint = 5000
 
 
 class SimpleAlgorithm(Algorithm):
@@ -53,7 +54,7 @@ class SimpleAlgorithm(Algorithm):
         sellState = sellState or (isPeak(self.MA7D) and ((self.data[self.curPos] - self.MA99[self.curPos]) > sellMA99DifThreshold))
 
         #when MA250 is at a peak
-        #sellState = sellState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isPeak(MA25D))
+        sellState = sellState or ((abs(self.MA250D[self.curPos]) < MA250GradientThreshold) and isPeak(self.MA25D))
 
         return sellState
 
@@ -73,8 +74,11 @@ class SimpleAlgorithm(Algorithm):
         #when MA250 is at a trough
         #buyState = buyState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isTrough(MA25D))
         #buyState = buyState or isTrough(MA250D)
+        if(self.uLong[self.curPos] != None):
+            buyState = buyState and (self.data[self.curPos] < (self.runningAverage * 1.005))
+        else:
+            buyState = False
 
-        buyState = buyState and (self.MA250D[self.curPos] > buyMA250GradientThreshold)
 
         return buyState
 
