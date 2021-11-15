@@ -2,7 +2,6 @@
 
 from src.Algorithm import *
 from src.SimpleAlgorithm import *
-import matplotlib.pyplot as plt
 import time
 import json
 
@@ -22,8 +21,6 @@ trading = SimpleAlgorithm()
 tradingDictionary = {}
 tradingDictionary['openTrades'] = []
 tradingDictionary['closedTrades'] = []
-
-
 
 
 startTime = time.time()
@@ -123,8 +120,3 @@ print("\n{} data points analysed in {:.2f}s".format(trading.totalPosition, (endT
 jsonFile = open(exportFileName, "w")
 json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
 jsonFile.close()
-
-
-
-plt.grid()
-plt.show()
