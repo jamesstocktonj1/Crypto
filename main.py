@@ -90,8 +90,6 @@ for t in tradingDictionary['closedTrades']:
 
     print("Closed Trade: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(t['openPrice'], t['closePrice'], t['percReturn']))
 
-    fig1.plot([t['openTime'], t['closeTime']], [t['openPrice'], t['closePrice']])
-
     totalReturn += float(t['percReturn'])
     returnList.append(float(t['percReturn']))
 
