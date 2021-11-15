@@ -114,5 +114,5 @@ dmypy.json
 .pyre/
 
 #
-continuousdata.txt
-trading.json
+*.txt
+*.json
