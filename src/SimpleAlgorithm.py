@@ -18,6 +18,10 @@ sellMAThreshold = 2.5
 sellMA99DifThreshold = 5
 sellMA250DifThreshold = 5
 
+#absolute buy conditions
+MA250DThreshold = -0.05
+volatilityThreshold = 0.2
+
 
 #trading values
 maxTrades = 20
@@ -27,7 +31,7 @@ comTrades = []
 #buy conditions
 returnThreshold = 0.8
 highSell = 0.8
-buyBuyCooloff = 30
+buyBuyCooloff = 60
 
 #sellconditions
 lowSell = -10.0
@@ -74,10 +78,12 @@ class SimpleAlgorithm(Algorithm):
         #when MA250 is at a trough
         #buyState = buyState or ((abs(MA250D[curPos]) < MA250GradientThreshold) and isTrough(MA25D))
         #buyState = buyState or isTrough(MA250D)
-        if(self.uLong[self.curPos] != None):
-            buyState = buyState and (self.data[self.curPos] < (self.runningAverage * 1.005))
-        else:
-            buyState = False
+        #if(self.uLong[self.curPos] != None):
+        #    buyState = buyState and (self.data[self.curPos] < (self.runningAverage * 1.005))
+        #else:
+        #    buyState = False
+
+        buyState = buyState and ((self.getVolatilityValue() < 0.25) and (self.data[self.curPos] < (self.runningAverage * 1.01)) and (min(self.MA250D[(self.curPos - 1000):(self.curPos + 1)]) > MA250DThreshold))
 
 
         return buyState

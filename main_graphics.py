@@ -22,6 +22,8 @@ incompleteTrades = []
 
 data = []
 
+volatility = []
+
 startTime = time.time()
 
 #main file read loop
@@ -45,6 +47,8 @@ for l in f:
     if(trading.newCompleteTrade()):
         completeTrades += trading.getLatestClosedTrades()
 
+    volatility.append(trading.getVolatilityValue())
+
 endTime = time.time()
 
 f.close()
@@ -52,11 +56,15 @@ f.close()
 #get remaining open trades
 incompleteTrades = trading.getCurrentTrades()
 
-fig1 = plt.subplot(1, 1, 1)
+fig1 = plt.subplot(2, 1, 1)
+fig2 = plt.subplot(2, 1, 2)
 
 fig1.plot(range(0, len(data)), data)
 fig1.plot(range(0, len(trading.MA25)), trading.MA25)
 fig1.plot(range(0, len(trading.runningRunningAverage)), trading.runningRunningAverage)
+
+fig2.plot(range(0, len(trading.uLongD)), trading.uLongD)
+fig2.plot(range(0, len(volatility)), volatility)
 
 print("Last Point: {}".format(trading.totalPosition))
 
@@ -99,4 +107,5 @@ print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
 
 print("\n{} data points analysed in {:.2f}s".format(len(data), (endTime - startTime)))
 
+plt.grid()
 plt.show()

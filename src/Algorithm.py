@@ -165,3 +165,12 @@ class Algorithm:
             self.curTrades[self.curTrades.index(t)]['percReturn'] = percReturn
 
         return self.curTrades
+
+
+    def getVolatilityValue(self):
+        volatilityScope = 5000
+
+        if(self.totalPosition < volatilityScope):
+            return (max(self.data[:(self.curPos + 1)]) - min(self.data[:(self.curPos + 1)])) / min(self.data[:(self.curPos + 1)])
+        else:
+            return (max(self.data[(self.curPos - volatilityScope):(self.curPos + 1)]) - min(self.data[(self.curPos - volatilityScope):(self.curPos + 1)])) / min(self.data[(self.curPos - volatilityScope):(self.curPos + 1)])
