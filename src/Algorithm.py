@@ -56,6 +56,20 @@ class Algorithm:
         if(len(self.data) > maxBufferSize):
             self.data = self.data[(len(self.data) - maxBufferSize):len(self.data)]
 
+            self.MA7 = self.MA7[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA25 = self.MA25[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA99 = self.MA99[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA250 = self.MA250[(len(self.data) - maxBufferSize):len(self.data)]
+            self.uLong = self.uLong[(len(self.data) - maxBufferSize):len(self.data)]
+
+            self.MA7D = self.MA7D[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA25D = self.MA25D[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA99D = self.MA99D[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA250D = self.MA250D[(len(self.data) - maxBufferSize):len(self.data)]
+            self.uLongD = self.uLongD[(len(self.data) - maxBufferSize):len(self.data)]
+
+            self.curPos = len(self.data) - 1
+
     #add new current value to the buffer
     def addValue(self, value):
         self.data.append(value)

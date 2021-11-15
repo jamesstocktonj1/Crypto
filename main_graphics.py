@@ -119,7 +119,7 @@ tradingDictionary['openTrades'] = incompleteTrades
 
 #write dictionary to json file
 jsonFile = open(exportFileName, "w")
-json.dump(tradingDictionary, jsonFile)
+json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
 jsonFile.close()
 
 
