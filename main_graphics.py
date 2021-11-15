@@ -4,10 +4,12 @@ from src.Algorithm import *
 from src.SimpleAlgorithm import *
 import matplotlib.pyplot as plt
 import time
+import json
 
 
 #import file
 importFileName = "continuousdata.txt"
+exportFileName = "trading.json"
 
 f = open(importFileName, "r")
 
@@ -75,7 +77,7 @@ complexReturn = 1
 returnList = []
 
 
-print("Completed Trades")
+print("\nCompleted Trades")
 for t in completeTrades:
 
     print("Closed Trade: Buy {:.4f}\tSell {:.4f}\tReturn {:.3f}%".format(t['openPrice'], t['closePrice'], t['percReturn']))
@@ -89,7 +91,7 @@ for t in completeTrades:
     complexReturn *= ((float(t['percReturn'] / 100) * 10) + 1)
 
 
-print("Incomplete Trades")
+print("\nIncomplete Trades")
 for t in incompleteTrades:
 
     print("Open Trade: Buy {:.4f}\tReturn {:.3f}%".format(t['openPrice'], t['percReturn']))
@@ -98,14 +100,29 @@ for t in incompleteTrades:
 print("\n\nSummary\nClosed Trades: {}".format(len(completeTrades)))
 print("Open Trades: {}".format(len(incompleteTrades)))
 
+#min/max
 print("\nHighest Return: {:.3f}%".format(max(returnList)))
 print("Lowest Return: {:.3f}%".format(min(returnList)))
 
+#returns
 print("\nTotal Return: {:.4f}%".format(totalReturn))
-print("Compoung Return: {:.4f}%".format(complexReturn))
+print("Compound Return: {:.4f}%".format(complexReturn))
 print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
 
+#time performance analysis
 print("\n{} data points analysed in {:.2f}s".format(len(data), (endTime - startTime)))
+
+#create dictionary of all trades
+tradingDictionary = {}
+tradingDictionary['closedTrades'] = completeTrades
+tradingDictionary['openTrades'] = incompleteTrades
+
+#write dictionary to json file
+jsonFile = open(exportFileName, "w")
+json.dump(tradingDictionary, jsonFile)
+jsonFile.close()
+
+
 
 plt.grid()
 plt.show()

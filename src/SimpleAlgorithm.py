@@ -19,7 +19,7 @@ sellMA99DifThreshold = 5
 sellMA250DifThreshold = 5
 
 #absolute buy conditions
-MA250DThreshold = -0.05
+MA250DThreshold = -0.075
 volatilityThreshold = 0.2
 
 
