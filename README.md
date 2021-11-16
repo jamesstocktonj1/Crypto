@@ -16,5 +16,10 @@ A second piece I implemented was a running average. This in effect the sum of th
 
 I also implemented a kind of hierarchy for the rules. Since there are so many rules which have different levels of risk depending on the scope of data they are tracking, the order that these rules are performed in and the checks done of them are both important. I currently have the rules which look at a small time scope (eg MA25 trough and MA99 - MA25 difference threshold) are all only performed when the volatility value is low enough. Then for the rule looking at the area under the running average, since it looks at data over thousands of seconds, this is not checked by the volatility since it is safe enough to be performed.
 
+The performance on the 42 hour data can be seen below.
+
+<p align="center"><img src="https://github.com/jamesstocktonj1/Crypto/blob/main/media/updated_rules.png"></p>
+
+
 #### Disclaimer
 This code is non-functional and for concept only. Do not use to trade as I will not be responsible for any money lost.
