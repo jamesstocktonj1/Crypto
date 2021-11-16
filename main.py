@@ -7,8 +7,10 @@ import json
 
 
 #import file
-importFileName = "continuousdata.txt"
-exportFileName = "trading.json"
+#importFileName = "continuousdata.txt"
+#exportFileName = "trading.json"
+importFileName = "dump12_2.txt"
+exportFileName = "trading12_2.json"
 
 f = open(importFileName, "r")
 

@@ -86,6 +86,12 @@ class SimpleAlgorithm(Algorithm):
         buyState = buyState and ((self.getVolatilityValue() < 0.25) and (self.data[self.curPos] < (self.runningAverage * 1.01)) and (min(self.MA250D[(self.curPos - 1000):(self.curPos + 1)]) > MA250DThreshold))
 
 
+
+        #ultra low buy state
+        buyState = buyState or ((self.data[self.curPos] < self.runningAverage) and (areaUnder(self.MA25, self.runningRunningAverage) < 0.5) and isTrough(self.MA7D))
+
+
+
         return buyState
 
 
