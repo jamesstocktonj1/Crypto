@@ -59,7 +59,7 @@ for d in data:
         for t in trading.getLatestClosedTrades():
 
             bankAccount += (bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)
-            print("Money Made: £{:.2f}".format((bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)))
+            print("Money Made: £{:.4f}".format((bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)))
 
 
     if((trading.curPos % 1000) == 0):
