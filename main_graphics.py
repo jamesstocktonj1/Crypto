@@ -37,6 +37,7 @@ f.close()
 
 
 bankAccount = 100
+rollingBank = []
 
 startTime = time.time()
 
@@ -64,16 +65,20 @@ for d in data:
     if((trading.curPos % 1000) == 0):
         print("Position: {}".format(trading.curPos))
 
+    rollingBank.append(bankAccount)
 
 endTime = time.time()
 
 #get remaining open trades
 incompleteTrades = trading.getCurrentTrades()
 
-fig1 = plt.subplot(1, 1, 1)
+fig1 = plt.subplot(2, 1, 1)
+fig2 = plt.subplot(2, 1, 2)
 
 fig1.plot(range(0, len(data)), data)
 fig1.plot(range(0, len(trading.MA25)), trading.MA25)
+
+fig2.plot(range(0, len(rollingBank)), rollingBank)
 
 
 
