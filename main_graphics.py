@@ -5,11 +5,14 @@ from src.SimpleAlgorithm import *
 import matplotlib.pyplot as plt
 import time
 import json
+import math
 
 
 #import file
 importFileName = "continuousdata.txt"
 exportFileName = "trading.json"
+#importFileName = "dump12_2.txt"
+#exportFileName = "trading12_2.json"
 
 f = open(importFileName, "r")
 
@@ -36,7 +39,7 @@ for l in f:
 f.close()
 
 
-bankAccount = 100
+bankAccount = 1000
 rollingBank = []
 
 startTime = time.time()
@@ -58,8 +61,8 @@ for d in data:
 
         for t in trading.getLatestClosedTrades():
 
-            bankAccount += (bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)
-            print("Money Made: £{:.4f}".format((bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)))
+            bankAccount += (rollingBank[t['openTime']] * 0.05 * t['percReturn']  * 0.01 * 10)
+            print("Money Made: £{:.4f}".format((rollingBank[t['openTime']] * 0.05 * t['percReturn']  * 0.01 * 10)))
 
 
     if((trading.curPos % 1000) == 0):
@@ -136,6 +139,11 @@ print("\nTotal Return: {:.4f}%".format(totalReturn))
 print("Compound Return: {:.4f}%".format(complexReturn))
 print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
 print("Bank Account: ${:.2f}".format(bankAccount))
+
+
+hourlyReturn = math.exp(math.log(bankAccount / rollingBank[0]) / (len(data) / 3600))
+hourlyReturn = (hourlyReturn - 1) * 100
+print("Hourly Return: {:.4f}%".format(hourlyReturn))
 
 #time performance analysis
 print("\n{} data points analysed in {:.2f}s".format(len(data), (endTime - startTime)))
