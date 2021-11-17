@@ -90,6 +90,8 @@ class SimpleAlgorithm(Algorithm):
         #ultra low buy state
         buyState = buyState or ((self.data[self.curPos] < self.runningAverage) and (areaUnder(self.MA25, self.runningRunningAverage) < 0.5) and isTrough(self.MA7D))
 
+        buyState = buyState or (isTrough(self.MA7D) and (self.data[self.curPos] < (self.runningAverage * 0.98)))
+
 
 
         return buyState

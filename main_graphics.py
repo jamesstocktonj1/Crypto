@@ -24,7 +24,7 @@ incompleteTrades = []
 
 data = []
 
-startTime = time.time()
+
 
 #main file read loop
 for l in f:
@@ -33,8 +33,16 @@ for l in f:
     d = l.split(",")
     data.append(float(d[1]))
 
+f.close()
+
+
+bankAccount = 100
+
+startTime = time.time()
+
+for d in data:
     #add new data value
-    trading.addValue(float(d[1]))
+    trading.addValue(float(d))
     trading.resizeBuffer()
 
     #perform calculations   
@@ -47,10 +55,17 @@ for l in f:
     if(trading.newCompleteTrade()):
         completeTrades += trading.getLatestClosedTrades()
 
+        for t in trading.getLatestClosedTrades():
+
+            bankAccount += (bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)
+            print("Money Made: £{:.2f}".format((bankAccount * 0.05 * t['percReturn']  * 0.01 * 10)))
+
+
+    if((trading.curPos % 1000) == 0):
+        print("Position: {}".format(trading.curPos))
+
 
 endTime = time.time()
-
-f.close()
 
 #get remaining open trades
 incompleteTrades = trading.getCurrentTrades()
@@ -59,7 +74,21 @@ fig1 = plt.subplot(1, 1, 1)
 
 fig1.plot(range(0, len(data)), data)
 fig1.plot(range(0, len(trading.MA25)), trading.MA25)
+
+
+
+upperBound = []
+lowerBound = []
+for p in trading.runningRunningAverage:
+    upperBound.append(p * 1.01)
+    lowerBound.append(p * 0.98)
+
 fig1.plot(range(0, len(trading.runningRunningAverage)), trading.runningRunningAverage)
+fig1.plot(range(0, len(upperBound)), upperBound)
+fig1.plot(range(0, len(lowerBound)), lowerBound)
+
+
+
 
 print("Last Point: {}".format(trading.totalPosition))
 
@@ -81,7 +110,7 @@ for t in completeTrades:
     returnList.append(float(t['percReturn']))
 
     #using 10x leverage
-    complexReturn *= ((float(t['percReturn'] / 100) * 10) + 1)
+    complexReturn *= (((float(t['percReturn'] / 100) * 10) * 0.05) + 1)
 
 
 print("\nIncomplete Trades")
@@ -101,6 +130,7 @@ print("Lowest Return: {:.3f}%".format(min(returnList)))
 print("\nTotal Return: {:.4f}%".format(totalReturn))
 print("Compound Return: {:.4f}%".format(complexReturn))
 print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
+print("Bank Account: ${:.2f}".format(bankAccount))
 
 #time performance analysis
 print("\n{} data points analysed in {:.2f}s".format(len(data), (endTime - startTime)))

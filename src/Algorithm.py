@@ -132,8 +132,15 @@ class Algorithm:
             self.uLongD.append(runningDifferential(self.uLong[(self.curPos - 5):(self.curPos + 1)]))
         else:
             self.uLongD.append(None)
+        
+        """
+        if(len(self.data) < 50000):
+            self.runningAverage = sum(self.data) / len(self.data)
+        else:
+            self.runningAverage = sum(self.data[(len(self.data) - 50000):]) / 50000"""
 
         self.runningAverage = sum(self.data) / len(self.data)
+
         self.runningRunningAverage.append(self.runningAverage)
 
 
