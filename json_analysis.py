@@ -37,7 +37,7 @@ def printResults():
         runningReturnTotal += float(t['percReturn'])
         returns.append(float(t['percReturn']))
 
-        print("Buy Price: ${:.2f}\tSell Price: ${:.2f}\tTime Open: {:.2f}s\tReturn: {:.3f}%".format(float(t['openPrice']), float(t['closePrice']), timeDifference, float(t['percReturn'])))
+        print("Buy Price: ${:.2f}\tSell Price: ${:.2f}\tTime Open: {}:{:02d}\tReturn: {:.3f}%".format(float(t['openPrice']), float(t['closePrice']), int(timeDifference / 60), int(((timeDifference / 60) % 1) * 60), float(t['percReturn'])))
 
 
     print("\nIncomplete Trades")
@@ -54,8 +54,10 @@ def printResults():
     print("\nHighest Return {:.3f}%".format(max(returns)))
     print("Lowest Return {:.3f}%".format(min(returns)))
 
+    averageTime = runningTimeTotal / (len(tradingDictionary['closedTrades'] * 60))
+
     print("\nAverage Return {:.3f}%".format(runningReturnTotal / len(tradingDictionary['closedTrades'])))
-    print("Average Time {:.2f} Mins".format(runningTimeTotal / (len(tradingDictionary['closedTrades'] * 60))))
+    print("Average Time {}:{:02d}".format(int(averageTime), int((averageTime % 1) * 60)))
 
 
 
