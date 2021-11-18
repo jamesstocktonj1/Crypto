@@ -9,6 +9,8 @@ import math
 
 
 #import file
+#importFileName = "ethData.txt"
+#exportFileName = "ethData.json"
 importFileName = "continuousdata.txt"
 exportFileName = "trading.json"
 #importFileName = "dump12_2.txt"
@@ -65,8 +67,8 @@ for d in data:
             print("Money Made: £{:.4f}".format((rollingBank[t['openTime']] * 0.05 * t['percReturn']  * 0.01 * 10)))
 
 
-    if((trading.curPos % 1000) == 0):
-        print("Position: {}".format(trading.curPos))
+    if((trading.totalPosition % 1000) == 0):
+        print("Position: {}".format(trading.totalPosition))
 
     rollingBank.append(bankAccount)
 
@@ -79,7 +81,7 @@ fig1 = plt.subplot(2, 1, 1)
 fig2 = plt.subplot(2, 1, 2)
 
 fig1.plot(range(0, len(data)), data)
-fig1.plot(range(0, len(trading.MA25)), trading.MA25)
+fig1.plot(range(len(data) - len(trading.MA25), len(data)), trading.MA25)
 
 fig2.plot(range(0, len(rollingBank)), rollingBank)
 
@@ -138,12 +140,13 @@ print("Lowest Return: {:.3f}%".format(min(returnList)))
 print("\nTotal Return: {:.4f}%".format(totalReturn))
 print("Compound Return: {:.4f}%".format(complexReturn))
 print("Average Return: {:.3f}%".format(totalReturn / len(completeTrades)))
-print("Bank Account: ${:.2f}".format(bankAccount))
 
-
-hourlyReturn = math.exp(math.log(bankAccount / rollingBank[0]) / (len(data) / 3600))
-hourlyReturn = (hourlyReturn - 1) * 100
-print("Hourly Return: {:.4f}%".format(hourlyReturn))
+#money analysis
+print("\nMoney Analysis\nBank Account: ${:.2f}".format(bankAccount))
+hourlyReturn = math.exp(math.log(bankAccount / rollingBank[0]) / (len(data) / 3600)) - 1
+print("Hourly Return: {:.4f}%".format(hourlyReturn * 100))
+doublingFactor = math.log(2) / math.log(hourlyReturn + 1)
+print("Doubling Factor: {:.1f} hours".format(doublingFactor))
 
 #time performance analysis
 print("\n{} data points analysed in {:.2f}s".format(len(data), (endTime - startTime)))
