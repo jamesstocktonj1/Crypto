@@ -83,7 +83,7 @@ class SimpleAlgorithm(Algorithm):
         #else:
         #    buyState = False
 
-        buyState = buyState and ((self.getVolatilityValue() < 0.25) and (self.data[self.curPos] < (self.runningAverage * 1.01)) and (min(self.MA250D[(self.curPos - 1000):(self.curPos + 1)]) > MA250DThreshold))
+        buyState = buyState and ((self.getVolatilityValue() < 0.35) and (self.data[self.curPos] < (self.runningAverage * 1.02)) and (min(self.MA25D[(self.curPos - 1000):]) > MA250DThreshold))
 
 
 
