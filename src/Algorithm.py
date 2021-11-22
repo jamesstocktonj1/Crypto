@@ -8,6 +8,7 @@ from .Analysis import *
 maxBufferSize = 6 * 60 * 60
 
 uLongDataSize = 2000
+runningAverageLength = 6 * 60 * 60
 
 class Algorithm:
 
@@ -84,27 +85,27 @@ class Algorithm:
         if(self.curPos > 8):
             self.MA7.append(runningIntegral(self.data[(self.curPos - 7):], 7))
         else:
-            self.MA7.append(None)
+            self.MA7.append(0)
 
         if(self.curPos > 26):
             self.MA25.append(runningIntegral(self.data[(self.curPos - 25):], 25))
         else:
-            self.MA25.append(None)
+            self.MA25.append(0)
         
         if(self.curPos > 100):
             self.MA99.append(runningIntegral(self.data[(self.curPos - 99):], 99))
         else:
-            self.MA99.append(None)
+            self.MA99.append(0)
 
         if(self.curPos > 251):
             self.MA250.append(runningIntegral(self.data[(self.curPos - 250):], 250))
         else:
-            self.MA250.append(None)
+            self.MA250.append(0)
 
         if(self.curPos > (uLongDataSize + 1)):
             self.uLong.append(runningIntegral(self.data[(self.curPos - uLongDataSize):], uLongDataSize))
         else:
-            self.uLong.append(None)
+            self.uLong.append(0)
 
         
         #generate runningDifferential values
@@ -139,7 +140,11 @@ class Algorithm:
         else:
             self.runningAverage = sum(self.data[(len(self.data) - 50000):]) / 50000"""
 
-        self.runningAverage = sum(self.data) / len(self.data)
+
+        if(self.curPos < runningAverageLength):
+            self.runningAverage = sum(self.data) / len(self.data)
+        else:
+            self.runningAverage = sum(self.data[(self.curPos - runningAverageLength):]) / len(self.data[(self.curPos - runningAverageLength):])
 
         self.runningRunningAverage.append(self.runningAverage)
 
@@ -188,8 +193,7 @@ class Algorithm:
         return self.curTrades
 
 
-    def getVolatilityValue(self):
-        volatilityScope = 5000
+    def getVolatilityValue(self, volatilityScope=10800):
 
         if(self.totalPosition < volatilityScope):
             return (max(self.data[:(self.curPos + 1)]) - min(self.data[:(self.curPos + 1)])) / min(self.data[:(self.curPos + 1)])
