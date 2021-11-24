@@ -92,7 +92,9 @@ class TrendingAlgorithm(Algorithm):
 
         buyState = buyState and (self.data[self.curPos] < (self.runningRunningAverage[self.curPos] * (1 - (buyDataAverageDifference * 0.01))))
 
-        buyState = buyState or (self.data[self.curPos] < (self.runningRunningAverage[self.curPos] * (1 - (buyDataAverageDifference * 0.2))))
+        #buyState = buyState or (self.data[self.curPos] < (self.runningRunningAverage[self.curPos] * (1 - (buyDataAverageDifference * 0.2))))
+
+        buyState = buyState and (min(self.MA25D[(self.curPos - 600):]) > -0.15)
 
         #buyState = buyState and (self.runningAverageD[self.curPos] > 0)
 
