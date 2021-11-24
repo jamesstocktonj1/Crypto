@@ -2,6 +2,7 @@
 
 from src.Algorithm import *
 from src.SimpleAlgorithm import *
+from src.TrendingAlgorithm import *
 from binance.client import Client
 import time
 import json
@@ -12,6 +13,8 @@ import json
 #exportFileName = "trading.json"
 #importFileName = "dump12_2.txt"
 exportFileName = "trading12_2.json"
+
+appendTrades = True
 
 
 f = open("cred.txt", "r")
@@ -30,7 +33,7 @@ client.API_URL = 'https://api.binance.com/api'
 
 
 #initialise trading object
-trading = SimpleAlgorithm()
+trading = TrendingAlgorithm()
 
 
 #trading dictionary
@@ -38,9 +41,15 @@ tradingDictionary = {}
 tradingDictionary['openTrades'] = []
 tradingDictionary['closedTrades'] = []
 
-jsonFile = open(exportFileName, "w")
-json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
-jsonFile.close()
+if(appendTrades):
+    jsonFile = open(exportFileName, "r")
+    tradingDictionary = json.load(jsonFile)
+    jsonFile.close()
+
+else:
+    jsonFile = open(exportFileName, "w")
+    json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
+    jsonFile.close()
 
 
 #main trading loop
@@ -88,6 +97,8 @@ while True:
         json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
         jsonFile.close()
 
+    if((trading.totalPosition % 60) == 0):
+        print("Time: {}:{:02d}".format(int(trading.totalPosition / 3600), int(((trading.totalPosition / 3600) % 60) * 60)))
 
     while(time.time() < (startTime + 1)):
         pass
