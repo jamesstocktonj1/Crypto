@@ -25,6 +25,10 @@ def printResults():
     runningReturnTotal = 0
     returns = []
 
+    compoundReturn = 1
+    compoundXReturn = 1
+    compoundYReturn = 1
+
     loadFile()
 
     print("\nCompleted Trades")
@@ -36,6 +40,10 @@ def printResults():
         runningTimeTotal += timeDifference
         runningReturnTotal += float(t['percReturn'])
         returns.append(float(t['percReturn']))
+
+        compoundReturn *= 1 + (float(t['percReturn']) * 0.01)
+        compoundXReturn *= 1 + (float(t['percReturn']) * 0.01 * 10 * 0.05)
+        compoundYReturn *= 1 + (float(t['percReturn']) * 0.01 * 20 * 0.05)
 
         print("Buy Price: ${:.2f}\tSell Price: ${:.2f}\tTime Open: {}:{:02d}\tReturn: {:.3f}%".format(float(t['openPrice']), float(t['closePrice']), int(timeDifference / 60), int(((timeDifference / 60) % 1) * 60), float(t['percReturn'])))
 
@@ -53,6 +61,14 @@ def printResults():
 
     print("\nHighest Return {:.3f}%".format(max(returns)))
     print("Lowest Return {:.3f}%".format(min(returns)))
+
+    compoundReturn = (compoundReturn - 1) * 100
+    compoundXReturn = (compoundXReturn - 1) * 100
+    compoundYReturn = (compoundYReturn - 1) * 100
+
+    print("\nCompound Return {:.3f}%".format(compoundReturn))
+    print("Compound 10x Return {:.3f}%".format(compoundXReturn))
+    print("Compound 20x Return {:.3f}%".format(compoundYReturn))
 
     averageTime = runningTimeTotal / (len(tradingDictionary['closedTrades'] * 60))
 
