@@ -5,9 +5,10 @@ from .Analysis import *
 
 
 #12 hour buffer size
-maxBufferSize = 120 * 60 * 60
+maxBufferSize = 6 * 60 * 60
 
 uLongDataSize = 2000
+runningAverageLength = 1 * 60 * 60
 
 class Algorithm:
 
@@ -53,20 +54,20 @@ class Algorithm:
     #resize the buffer
     def resizeBuffer(self):
 
-        if(len(self.data) > maxBufferSize):
-            self.data = self.data[(len(self.data) - maxBufferSize):len(self.data)]
+        if(len(self.data) > (4 * maxBufferSize)):
+            self.data = self.data[maxBufferSize:]
 
-            self.MA7 = self.MA7[(len(self.data) - maxBufferSize):len(self.data)]
-            self.MA25 = self.MA25[(len(self.data) - maxBufferSize):len(self.data)]
-            self.MA99 = self.MA99[(len(self.data) - maxBufferSize):len(self.data)]
-            self.MA250 = self.MA250[(len(self.data) - maxBufferSize):len(self.data)]
-            self.uLong = self.uLong[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA7 = self.MA7[maxBufferSize:]
+            self.MA25 = self.MA25[maxBufferSize:]
+            self.MA99 = self.MA99[maxBufferSize:]
+            self.MA250 = self.MA250[maxBufferSize:]
+            self.uLong = self.uLong[maxBufferSize:]
 
-            self.MA7D = self.MA7D[(len(self.data) - maxBufferSize):len(self.data)]
-            self.MA25D = self.MA25D[(len(self.data) - maxBufferSize):len(self.data)]
-            self.MA99D = self.MA99D[(len(self.data) - maxBufferSize):len(self.data)]
-            self.MA250D = self.MA250D[(len(self.data) - maxBufferSize):len(self.data)]
-            self.uLongD = self.uLongD[(len(self.data) - maxBufferSize):len(self.data)]
+            self.MA7D = self.MA7D[maxBufferSize:]
+            self.MA25D = self.MA25D[maxBufferSize:]
+            self.MA99D = self.MA99D[maxBufferSize:]
+            self.MA250D = self.MA250D[maxBufferSize:]
+            self.uLongD = self.uLongD[maxBufferSize:]
 
             self.curPos = len(self.data) - 1
 
@@ -82,54 +83,54 @@ class Algorithm:
 
         #generate runningIntegral values
         if(self.curPos > 8):
-            self.MA7.append(runningIntegral(self.data[(self.curPos - 7):(self.curPos + 1)], 7))
+            self.MA7.append(runningIntegral(self.data[(self.curPos - 7):], 7))
         else:
-            self.MA7.append(None)
+            self.MA7.append(0)
 
         if(self.curPos > 26):
-            self.MA25.append(runningIntegral(self.data[(self.curPos - 25):(self.curPos + 1)], 25))
+            self.MA25.append(runningIntegral(self.data[(self.curPos - 25):], 25))
         else:
-            self.MA25.append(None)
+            self.MA25.append(0)
         
         if(self.curPos > 100):
-            self.MA99.append(runningIntegral(self.data[(self.curPos - 99):(self.curPos + 1)], 99))
+            self.MA99.append(runningIntegral(self.data[(self.curPos - 99):], 99))
         else:
-            self.MA99.append(None)
+            self.MA99.append(0)
 
         if(self.curPos > 251):
-            self.MA250.append(runningIntegral(self.data[(self.curPos - 250):(self.curPos + 1)], 250))
+            self.MA250.append(runningIntegral(self.data[(self.curPos - 250):], 250))
         else:
-            self.MA250.append(None)
+            self.MA250.append(0)
 
         if(self.curPos > (uLongDataSize + 1)):
-            self.uLong.append(runningIntegral(self.data[(self.curPos - uLongDataSize):(self.curPos + 1)], uLongDataSize))
+            self.uLong.append(runningIntegral(self.data[(self.curPos - uLongDataSize):], uLongDataSize))
         else:
-            self.uLong.append(None)
+            self.uLong.append(0)
 
         
         #generate runningDifferential values
         if(self.curPos > 13):
-            self.MA7D.append(runningDifferential(self.MA7[(self.curPos - 5):(self.curPos + 1)]))
+            self.MA7D.append(runningDifferential(self.MA7[(self.curPos - 5):]))
         else:
             self.MA7D.append(None)
 
         if(self.curPos > 31):
-            self.MA25D.append(runningDifferential(self.MA25[(self.curPos - 5):(self.curPos + 1)]))
+            self.MA25D.append(runningDifferential(self.MA25[(self.curPos - 5):]))
         else:
             self.MA25D.append(None)
         
         if(self.curPos > 105):
-            self.MA99D.append(runningDifferential(self.MA99[(self.curPos - 5):(self.curPos + 1)]))
+            self.MA99D.append(runningDifferential(self.MA99[(self.curPos - 5):]))
         else:
             self.MA99D.append(None)
         
         if(self.curPos > 256):
-            self.MA250D.append(runningDifferential(self.MA250[(self.curPos - 5):(self.curPos + 1)]))
+            self.MA250D.append(runningDifferential(self.MA250[(self.curPos - 5):]))
         else:
             self.MA250D.append(None)
 
         if(self.curPos > (uLongDataSize + 6)):
-            self.uLongD.append(runningDifferential(self.uLong[(self.curPos - 5):(self.curPos + 1)]))
+            self.uLongD.append(runningDifferential(self.uLong[(self.curPos - 5):]))
         else:
             self.uLongD.append(None)
         
@@ -139,7 +140,11 @@ class Algorithm:
         else:
             self.runningAverage = sum(self.data[(len(self.data) - 50000):]) / 50000"""
 
-        self.runningAverage = sum(self.data) / len(self.data)
+
+        if(self.curPos < runningAverageLength):
+            self.runningAverage = sum(self.data) / len(self.data)
+        else:
+            self.runningAverage = sum(self.data[(self.curPos - runningAverageLength):]) / len(self.data[(self.curPos - runningAverageLength):])
 
         self.runningRunningAverage.append(self.runningAverage)
 
@@ -188,8 +193,7 @@ class Algorithm:
         return self.curTrades
 
 
-    def getVolatilityValue(self):
-        volatilityScope = 5000
+    def getVolatilityValue(self, volatilityScope=10800):
 
         if(self.totalPosition < volatilityScope):
             return (max(self.data[:(self.curPos + 1)]) - min(self.data[:(self.curPos + 1)])) / min(self.data[:(self.curPos + 1)])

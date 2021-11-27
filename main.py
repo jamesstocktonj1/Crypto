@@ -2,6 +2,8 @@
 
 from src.Algorithm import *
 from src.SimpleAlgorithm import *
+from src.TrendingAlgorithm import *
+from binance.client import Client
 import time
 import json
 
@@ -9,14 +11,29 @@ import json
 #import file
 #importFileName = "continuousdata.txt"
 #exportFileName = "trading.json"
-importFileName = "dump12_2.txt"
+#importFileName = "dump12_2.txt"
 exportFileName = "trading12_2.json"
 
-f = open(importFileName, "r")
+appendTrades = True
+
+
+f = open("cred.txt", "r")
+
+api_key = str(f.readline().strip())
+api_secret = str(f.readline().strip())
+
+f.close()
+
+print(api_key)
+print(api_secret)
+
+
+client = Client(api_key, api_secret)
+client.API_URL = 'https://api.binance.com/api'
 
 
 #initialise trading object
-trading = SimpleAlgorithm()
+trading = TrendingAlgorithm()
 
 
 #trading dictionary
@@ -24,17 +41,26 @@ tradingDictionary = {}
 tradingDictionary['openTrades'] = []
 tradingDictionary['closedTrades'] = []
 
+if(appendTrades):
+    jsonFile = open(exportFileName, "r")
+    tradingDictionary = json.load(jsonFile)
+    jsonFile.close()
 
-startTime = time.time()
+else:
+    jsonFile = open(exportFileName, "w")
+    json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
+    jsonFile.close()
 
-#main file read loop
-for l in f:
 
-    l = l.strip()
-    d = l.split(",")
+#main trading loop
+while True:
+
+    startTime = time.time()
+
+    eth_price = client.get_margin_price_index(symbol="ETHUSDT")
 
     #add new data value
-    trading.addValue(float(d[1]))
+    trading.addValue(float(eth_price['price']))
     trading.resizeBuffer()
 
     #perform calculations   
@@ -70,6 +96,17 @@ for l in f:
         jsonFile = open(exportFileName, "w")
         json.dump(tradingDictionary, jsonFile, indent=4, sort_keys=True)
         jsonFile.close()
+
+    if((trading.totalPosition % 60) == 0):
+        print("Time: {}:{:02d}".format(int(trading.totalPosition / 3600), int(((trading.totalPosition / 3600) % 60) * 60)))
+
+    while(time.time() < (startTime + 1)):
+        pass
+
+
+
+
+
 
 endTime = time.time()
 
