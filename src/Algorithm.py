@@ -8,7 +8,7 @@ from .Analysis import *
 maxBufferSize = 6 * 60 * 60
 
 uLongDataSize = 2000
-runningAverageLength = 6 * 60 * 60
+runningAverageLength = 1 * 60 * 60
 
 class Algorithm:
 
